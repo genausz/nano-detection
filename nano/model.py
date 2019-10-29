@@ -1,11 +1,24 @@
-class NanoObjectDetection(object):
+import keras
+from keras.applications import VGG16
+from keras.layers import Input, Conv2D, MaxPool2D, Dense
 
-    def __init__(self, mode, config, model_dir):
+class NanoModel(object):
+
+    def __init__(self, mode, config):
         assert mode in ['training', 'inference']
         self.mode = mode
         self.config = config
-        self.model_dir = model_dir
         self.keras_model = self.build()
     
     def build(self):
-        return ''
+        input_image = Input(shape=self.config.IMAGE_SHAPE, name='input_image')
+
+        backbone = VGG16(include_top=False, input_tensor=input_image)
+        
+        backbone.summary()
+        feature = backbone.get_layer('block5_pool')
+
+        class_branch = Conv2D()
+
+        
+
