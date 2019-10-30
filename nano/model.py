@@ -50,5 +50,20 @@ class NanoModel(object):
         keras_model = keras.models.Model(inputs=inputs, outputs=outputs, name='nano_object_detection')
         
         return keras_model
+    
+    def compile(self):
         
+        # Add Losses
+        # First, clear previously set losses to avoid duplication
+        self.keras_model._losses = []
+        self.keras_model._per_input_losses = {}
+        loss_names = [
+            "class_loss",  "bbox_loss"]
+        for name in loss_names:
+            layer = self.keras_model.get_layer(name)
+            if layer.output in self.keras_model.losses:
+                continue
+            loss = tf.reduce_mean(layer.output, keepdims=True)
+            self.keras_model.add_loss(loss)
+
 
